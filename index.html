@@ -9,32 +9,7 @@
     <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.8.4/dist/aframe-extras.min.js"></script>
     <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
     <script src="https://rawgit.com/mayognaise/aframe-gif-shader/master/dist/aframe-gif-shader.min.js"></script>
-     <script>
-         AFRAME.registerComponent('vidhandler', {
-           // ...
-           init: function () {
-             // Set up initial state and variables.
-             this.toggle = false;
-             this.vid = document.querySelector("#vid")
-             this.vid.pause();
-           },
-           tick:function(){
-
-         if(this.el.object3D.visible == true){
-           if(!this.toggle){
-              this.toggle = true;
-              this.vid.play();
-              console.log('video playing !');
-             }
-           }else{
-           this.toggle = false;
-             this.vid.pause();
-             }
-           }
-         });
-     
-      </script>
- 
+  
   </head>
   <body style="margin : 0px; overflow: hidden;">
  
@@ -59,7 +34,9 @@
          <a-entity
              position="0 0 0"
              scale="1 1 1"
-             gltf-model= "./src/drunk.gltf" 
+             gltf-model= "./src/drunk.gltf"
+             animation-mixer="clip: *;"
+             loop = "repeat" 
          </a-entity>
          
          
