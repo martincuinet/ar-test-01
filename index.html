@@ -16,7 +16,7 @@
     <a-scene antialias="true" embedded arjs='sourceType: webcam;'> 
            
       <a-entity light="type:directional; castShadow:true;" position="1 1 1"></a-entity>
-      <a-marker-camera type ="pattern" url = "./src/pattern-logo.patt" vidhandler >       
+      <a-marker type ="pattern" url = "./src/pattern-logo.patt" vidhandler >       
          <a-entity
              position="0 0 0"
              scale="2.5 2.5 2.5"
@@ -24,7 +24,7 @@
              animation-mixer
              loop = "repeat" 
          </a-entity>  
-      </a-marker-camera>
+      </a-marker>
       <a-entity camera ></a-entity>            
     </a-scene>
   </body>
