@@ -28,7 +28,7 @@
              animation__2="property: position; from: 0 0 -0.08; to: 0 0.8 -0.08; delay : 2300; dur: 1000; easing: easeInOutCubic; loop: false"
              animation__3="property: scale; from: 0 1 0; to: 1 1 1; delay : 1200; dur: 1000; easing: easeInOutCubic; loop: false;"
          ></a-plane> -->
-
+         <!-- animation="property: rotation; from: 0 0 0; to: 0 360 0; dur: 10000; easing: easeInOutCubic; loop: true;" -->
          
          <a-entity light="type:directional; castShadow:true; intensity: 1.0; shadowCameraVisible: true;" position="0 5 0"></a-entity>
          <a-entity
@@ -37,8 +37,7 @@
              gltf-model= "./src/drunk.gltf"
              animation-mixer="clip: *;"
              loop = "repeat" 
-             animation="property: rotation; from: 0 0 0; to: 0 360 0; dur: 10000; easing: easeInOutCubic; loop: true;"
-             shadow="receive: false"
+             shadow="receive: false; cast: true"
          </a-entity>
          
          
