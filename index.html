@@ -14,36 +14,18 @@
   <body style="margin : 0px; overflow: hidden;">
  
     <a-scene antialias="true" embedded arjs='sourceType: webcam;'> 
-       
-     
-       
-       <!-- <a-assets>
-         <video controls muted id="vid" src="./src/reel.mp4" loop="true" crossorigin>
-       </a-assets> -->
-          
-      <a-marker type ="pattern" url = "./src/pattern-logo.patt" vidhandler >
-         
-         <!-- <a-plane position="0 0 -0.08" rotation="-90 0 0" scale="0 1 0" width="2" height="1.2" material="transparent:true; opacity: 1; src:#vid"
-             animation="property: rotation; from: -90 0 0; to: -33 0 0; delay : 2300; dur: 1000; easing: easeInOutCubic; loop: false;"
-             animation__2="property: position; from: 0 0 -0.08; to: 0 0.8 -0.08; delay : 2300; dur: 1000; easing: easeInOutCubic; loop: false"
-             animation__3="property: scale; from: 0 1 0; to: 1 1 1; delay : 1200; dur: 1000; easing: easeInOutCubic; loop: false;"
-         ></a-plane> -->
-         <!-- animation="property: rotation; from: 0 0 0; to: 0 360 0; dur: 10000; easing: easeInOutCubic; loop: true;" -->
-         
+           
+      <a-entity light="type:directional; castShadow:true;" position="1 1 1"></a-entity>
+      <a-marker-camera type ="pattern" url = "./src/pattern-logo.patt" vidhandler >       
          <a-entity
              position="0 0 0"
              scale="2.5 2.5 2.5"
              gltf-model= "./src/drunk.gltf"
              animation-mixer
              loop = "repeat" 
-         </a-entity>
-         
-         
-      </a-marker>
-      <a-entity camera ></a-entity>
-                 
-        
-                 
+         </a-entity>  
+      </a-marker-camera>
+      <a-entity camera ></a-entity>            
     </a-scene>
   </body>
 </html>
