@@ -44,10 +44,10 @@
      
        
        <a-assets>
-         <video controls muted id="vid" src="src/reel.mp4" loop="true" crossorigin>
+         <video controls muted id="vid" src="./src/reel.mp4" loop="true" crossorigin>
        </a-assets>
           
-      <a-marker type ="pattern" url = "src/pattern-logo.patt" vidhandler >
+      <a-marker type ="pattern" url = "./src/pattern-logo.patt" vidhandler >
          
          <a-plane position="0 0 -0.08" rotation="-90 0 0" scale="0 1 0" width="2" height="1.2" material="transparent:true; opacity: 1; src:#vid"
              animation="property: rotation; from: -90 0 0; to: -33 0 0; delay : 2300; dur: 1000; easing: easeInOutCubic; loop: false;"
@@ -60,7 +60,7 @@
          <a-entity
              position="0 -0.1 0"
              scale="0 0 0"
-             gltf-model= "src/ToonBoomLogo.gltf" 
+             gltf-model= "./src/ToonBoomLogo.gltf" 
              animation="property: position; from: 0 -0.1 0; to: 0 1.2 0; delay : 1500; dur: 1000; easing: easeInOutCubic; loop: false;"
              animation__2="property: scale; from: 0 0 0; to: 0.8 0.8 0.8; delay : 1500; dur: 1000; easing: easeInOutCubic; loop: false;"
              animation__3="property: rotation; from: 0 0 0; to: 0 360 0; delay : 1500; dur: 1000; easing: easeInOutCubic; loop: false;"
