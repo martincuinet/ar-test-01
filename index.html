@@ -15,8 +15,8 @@
  
     <a-scene antialias="true" embedded arjs='sourceType: webcam;' shadow="autoUpdate: true"> 
            
-      <a-entity light="type: ambient; intensity: 0.7;"></a-entity>
-      <a-entity light="type:directional; castShadow:true;" position="0 0 0"></a-entity>
+      <!-- <a-entity light="type: ambient; intensity: 0.7;"></a-entity> -->
+      <a-entity light="type:directional; castShadow:true; intensity: 1;" position="1 1 1"></a-entity>
       <a-marker type ="pattern" url = "./src/pattern-logo.patt">       
          <a-entity
              position="0 0 0"
