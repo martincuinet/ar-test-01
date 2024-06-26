@@ -13,7 +13,7 @@
   </head>
   <body style="margin : 0px; overflow: hidden;">
  
-    <a-scene antialias="true" embedded arjs='sourceType: webcam;'> 
+    <a-scene antialias="true" embedded arjs='sourceType: webcam;' shadow="autoUpdate: true"> 
            
       <a-entity light="type:directional; castShadow:true;" position="1 1 1"></a-entity>
       <a-marker type ="pattern" url = "./src/pattern-logo.patt">       
@@ -23,6 +23,7 @@
              gltf-model= "./src/drunk.gltf"
              animation-mixer
              loop = "repeat" 
+             shadow = "cast:true"
          </a-entity> 
          <a-plane position="0 0 0" rotation="-90 0 0" scale="1 1 1" material="transparent:true; opacity: 1;" shadow = "receive:true"></a-plane>
       </a-marker>
