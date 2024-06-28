@@ -49,6 +49,22 @@
           color: { type: 'color', default: '#00f' }
         },
         init: function () {
+          this.updateShader();
+        },
+        update: function () {
+          this.updateShader();
+        },
+        tick: function (time) {
+          const model = this.el.getObject3D('mesh');
+          if (model) {
+            model.traverse(node => {
+              if (node.isMesh && node.material.uniforms && node.material.uniforms.timeMsec) {
+                node.material.uniforms.timeMsec.value = time;
+              }
+            });
+          }
+        },
+        updateShader: function () {
           this.el.addEventListener('model-loaded', () => {
             const model = this.el.getObject3D('mesh');
             if (!model) return;
@@ -61,22 +77,12 @@
                   },
                   vertexShader: AFRAME.shaders['grid-glitch'].vertexShader,
                   fragmentShader: AFRAME.shaders['grid-glitch'].fragmentShader,
-                  skinning: node.geometry.attributes.skinWeight ? true : false // Enable skinning if the model uses it
+                  skinning: node.geometry.attributes.skinWeight ? true : false
                 });
                 node.material.needsUpdate = true;
               }
             });
           });
-        },
-        tick: function (time) {
-          const model = this.el.getObject3D('mesh');
-          if (model) {
-            model.traverse(node => {
-              if (node.isMesh && node.material.uniforms.timeMsec) {
-                node.material.uniforms.timeMsec.value = time;
-              }
-            });
-          }
         }
       });
     </script>
