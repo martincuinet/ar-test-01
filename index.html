@@ -35,6 +35,23 @@
           }
         `
       });
+
+      AFRAME.registerComponent('apply-shader', {
+        schema: {
+          shader: {type: 'string', default: 'hologram'}
+        },
+        init: function () {
+          this.el.addEventListener('model-loaded', () => {
+            const model = this.el.getObject3D('mesh');
+            if (!model) return;
+            model.traverse(node => {
+              if (node.isMesh) {
+                node.material = new THREE.ShaderMaterial(AFRAME.shaders[this.data.shader].shader);
+              }
+            });
+          });
+        }
+      });
     </script>
   </head>
   <body style="margin : 0px; overflow: hidden;">
