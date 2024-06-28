@@ -28,7 +28,7 @@
           void main() {
             float time = timeMsec / 1000.0;
             vec3 modulatedColor = mix(
-              vec3(mod(vUv, 0.05) * 20.0),
+              vec3(mod(vUv, 0.05).x * 20.0, mod(vUv, 0.05).y * 20.0, 1.0), // Proper vec3 construction
               color,
               sin(time)
             );
