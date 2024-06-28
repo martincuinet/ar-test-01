@@ -9,14 +9,38 @@
     <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.8.4/dist/aframe-extras.min.js"></script>
     <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
     <script>
-      AFRAME.registerComponent('apply-basic-material', {
+      AFRAME.registerShader('basicShader', {
+        schema: {},
+        vertexShader: `
+          varying vec2 vUv;
+          void main() {
+            vUv = uv;
+            vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+            gl_Position = projectionMatrix * mvPosition;
+          }
+        `,
+        fragmentShader: `
+          varying vec2 vUv;
+          void main() {
+            gl_FragColor = vec4(0.5, 0.5, 1.0, 1.0);
+          }
+        `
+      });
+
+      AFRAME.registerComponent('apply-shader', {
+        schema: {
+          shader: {type: 'string', default: 'basicShader'}
+        },
         init: function () {
           this.el.addEventListener('model-loaded', () => {
             const model = this.el.getObject3D('mesh');
             if (!model) return;
             model.traverse(node => {
               if (node.isMesh) {
-                node.material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+                node.material = new THREE.ShaderMaterial({
+                  vertexShader: AFRAME.shaders[this.data.shader].vertexShader,
+                  fragmentShader: AFRAME.shaders[this.data.shader].fragmentShader
+                });
               }
             });
           });
@@ -35,7 +59,8 @@
          gltf-model= "./src/drunk.gltf" 
          animation-mixer 
          loop="true" 
-         apply-basic-material>
+         apply-shader="shader: basicShader"
+         >
           </a-entity> 
 
          <a-plane 
