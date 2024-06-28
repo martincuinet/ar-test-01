@@ -9,73 +9,22 @@
     <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.8.4/dist/aframe-extras.min.js"></script>
     <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
     <script>
-      AFRAME.registerShader('transparent-glitch', {
-        schema: {
-          color: { type: 'color', is: 'uniform' },
-          timeMsec: { type: 'time', is: 'uniform' }
-        },
-        vertexShader: `
-          varying vec2 vUv;
-          void main() {
-            vUv = uv;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-          }
-        `,
-        fragmentShader: `
-          varying vec2 vUv;
-          uniform vec3 color;
-          uniform float timeMsec;
-          void main() {
-            float time = timeMsec / 1000.0;
-            vec3 modulatedColor = mix(
-              vec3(mod(vUv, 0.05).x * 20.0, mod(vUv, 0.05).y * 20.0, 1.0), // Proper vec3 construction
-              color,
-              sin(time)
-            );
-            gl_FragColor = vec4(modulatedColor, 0.5); // Set alpha to 0.5 for transparency
-          }
-        `
-      });
-  
-      AFRAME.registerComponent('apply-transparent-glitch-shader', {
-        schema: {
-          color: { type: 'color', default: '#00ff00' }
-        },
+      AFRAME.registerComponent('model-opacity', {
+        schema: {default: 0.5},
         init: function () {
-          this.el.addEventListener('model-loaded', () => {
-            this.applyShader();
-          });
+          this.el.addEventListener('model-loaded', this.update.bind(this));
         },
-        applyShader: function () {
-          const model = this.el.getObject3D('mesh');
-          if (!model) {
-            console.log("Model not found");
-            return;
-          }
-          console.log("Model loaded");
-          model.traverse(node => {
+        update: function () {
+          var mesh = this.el.getObject3D('mesh');
+          var data = this.data;
+          if (!mesh) { return; }
+          mesh.traverse(function (node) {
             if (node.isMesh) {
-              node.material = new THREE.ShaderMaterial({
-                uniforms: {
-                  color: { value: new THREE.Color(this.data.color) },
-                  timeMsec: { value: 0 }
-                },
-                vertexShader: AFRAME.shaders['transparent-glitch'].vertexShader,
-                fragmentShader: AFRAME.shaders['transparent-glitch'].fragmentShader,
-                transparent: true // Enable transparency
-              });
+              node.material.opacity = data;
+              node.material.transparent = data < 1.0;
+              node.material.needsUpdate = true;
             }
           });
-        },
-        tick: function (time) {
-          const model = this.el.getObject3D('mesh');
-          if (model) {
-            model.traverse(node => {
-              if (node.isMesh && node.material.uniforms.timeMsec) {
-                node.material.uniforms.timeMsec.value = time;
-              }
-            });
-          }
         }
       });
     </script>
@@ -91,7 +40,7 @@
          gltf-model= "./src/drunk.gltf" 
          animation-mixer 
          loop="true" 
-         apply-transparent-glitch-shader="color: blue;"
+         model-opacity
          >
           </a-entity> 
 
@@ -99,7 +48,7 @@
          position="-0.02 0 0" 
          rotation="-90 0 0" 
          scale="1.2 1.2 1.2" 
-         material="shader: transparent-glitch; color: blue;"
+         
          >
         </a-plane>
       </a-marker>
