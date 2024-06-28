@@ -53,6 +53,7 @@
         },
         update: function () {
           this.updateShader();
+          this.material.skinning = true
         },
         tick: function (time) {
           const model = this.el.getObject3D('mesh');
