@@ -9,6 +9,7 @@
     <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.8.4/dist/aframe-extras.min.js"></script>
     <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
     <script>
+      // Register a basic shader
       AFRAME.registerShader('basicShader', {
         schema: {},
         vertexShader: `
@@ -22,14 +23,15 @@
         fragmentShader: `
           varying vec2 vUv;
           void main() {
-            gl_FragColor = vec4(0.5, 0.5, 1.0, 1.0);
+            gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); // Red color
           }
         `
       });
 
+      // Component to apply the shader
       AFRAME.registerComponent('apply-shader', {
         schema: {
-          shader: {type: 'string', default: 'basicShader'}
+          shader: { type: 'string', default: 'basicShader' }
         },
         init: function () {
           this.el.addEventListener('model-loaded', () => {
