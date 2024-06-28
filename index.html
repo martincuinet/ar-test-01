@@ -10,43 +10,40 @@
     <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
     <script>
       // Register a basic shader
-      AFRAME.registerShader('basicShader', {
-        schema: {},
+      AFRAME.registerShader('grid-glitch', {
+        schema: {
+          color: {type: 'color', is: 'uniform'},
+          timeMsec: {type: 'time', is: 'uniform'}
+        },
         vertexShader: `
           varying vec2 vUv;
+
           void main() {
             vUv = uv;
-            vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-            gl_Position = projectionMatrix * mvPosition;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
           }
         `,
         fragmentShader: `
           varying vec2 vUv;
+          uniform vec3 color;
+          uniform float timeMsec; // A-Frame time in milliseconds.
+
           void main() {
-            gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); // Red color
+            float time = timeMsec / 1000.0; // Convert from A-Frame milliseconds to typical time in seconds.
+            // Use sin(time), which curves between 0 and 1 over time,
+            // to determine the mix of two colors:
+            //    (a) Dynamic color where 'R' and 'B' channels come
+            //        from a modulus of the UV coordinates.
+            //    (b) Base color.
+            //
+            // The color itself is a vec4 containing RGBA values 0-1.
+            gl_FragColor = mix(
+              vec4(mod(vUv , 0.05) * 20.0, 1.0, 1.0),
+              vec4(color, 1.0),
+              sin(time)
+            );
           }
         `
-      });
-
-      // Component to apply the shader
-      AFRAME.registerComponent('apply-shader', {
-        schema: {
-          shader: { type: 'string', default: 'basicShader' }
-        },
-        init: function () {
-          this.el.addEventListener('model-loaded', () => {
-            const model = this.el.getObject3D('mesh');
-            if (!model) return;
-            model.traverse(node => {
-              if (node.isMesh) {
-                node.material = new THREE.ShaderMaterial({
-                  vertexShader: AFRAME.shaders[this.data.shader].vertexShader,
-                  fragmentShader: AFRAME.shaders[this.data.shader].fragmentShader
-                });
-              }
-            });
-          });
-        }
       });
     </script>
   </head>
@@ -61,7 +58,7 @@
          gltf-model= "./src/drunk.gltf" 
          animation-mixer 
          loop="true" 
-         apply-shader="shader: basicShader"
+         material="shader:grid-glitch; color: blue;"
          >
           </a-entity> 
 
