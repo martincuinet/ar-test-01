@@ -9,41 +9,67 @@
     <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.8.4/dist/aframe-extras.min.js"></script>
     <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
     <script>
-      // Register a basic shader
+      // Register the shader
       AFRAME.registerShader('grid-glitch', {
         schema: {
-          color: {type: 'color', is: 'uniform'},
-          timeMsec: {type: 'time', is: 'uniform'}
+          color: { type: 'color', is: 'uniform' },
+          timeMsec: { type: 'time', is: 'uniform' }
         },
         vertexShader: `
           varying vec2 vUv;
-
           void main() {
             vUv = uv;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
           }
         `,
         fragmentShader: `
           varying vec2 vUv;
           uniform vec3 color;
-          uniform float timeMsec; // A-Frame time in milliseconds.
-
+          uniform float timeMsec;
           void main() {
-            float time = timeMsec / 1000.0; // Convert from A-Frame milliseconds to typical time in seconds.
-            // Use sin(time), which curves between 0 and 1 over time,
-            // to determine the mix of two colors:
-            //    (a) Dynamic color where 'R' and 'B' channels come
-            //        from a modulus of the UV coordinates.
-            //    (b) Base color.
-            //
-            // The color itself is a vec4 containing RGBA values 0-1.
+            float time = timeMsec / 1000.0;
             gl_FragColor = mix(
-              vec4(mod(vUv , 0.05) * 20.0, 1.0, 1.0),
+              vec4(mod(vUv, 0.05) * 20.0, 1.0, 1.0),
               vec4(color, 1.0),
               sin(time)
             );
           }
         `
+      });
+  
+      // Register the component to apply the shader
+      AFRAME.registerComponent('apply-grid-glitch-shader', {
+        schema: {
+          color: { type: 'color', default: '#00f' }
+        },
+        init: function () {
+          this.el.addEventListener('model-loaded', () => {
+            const model = this.el.getObject3D('mesh');
+            if (!model) return;
+            model.traverse(node => {
+              if (node.isMesh) {
+                node.material = new THREE.ShaderMaterial({
+                  uniforms: {
+                    color: { value: new THREE.Color(this.data.color) },
+                    timeMsec: { value: 0 }
+                  },
+                  vertexShader: AFRAME.shaders['grid-glitch'].vertexShader,
+                  fragmentShader: AFRAME.shaders['grid-glitch'].fragmentShader
+                });
+              }
+            });
+          });
+        },
+        tick: function (time) {
+          const model = this.el.getObject3D('mesh');
+          if (model) {
+            model.traverse(node => {
+              if (node.isMesh && node.material.uniforms.timeMsec) {
+                node.material.uniforms.timeMsec.value = time;
+              }
+            });
+          }
+        }
       });
     </script>
   </head>
@@ -58,7 +84,7 @@
          gltf-model= "./src/drunk.gltf" 
          animation-mixer 
          loop="true" 
-         material="shader:grid-glitch; color: blue;"
+         apply-grid-glitch-shader = "color: blue;"
          >
           </a-entity> 
 
@@ -66,7 +92,7 @@
          position="-0.02 0 0" 
          rotation="-90 0 0" 
          scale="1.2 1.2 1.2" 
-         material="shader:grid-glitch; color: blue;"
+         apply-grid-glitch-shader = "color: blue;"
          >
         </a-plane>
       </a-marker>
