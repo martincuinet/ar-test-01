@@ -9,7 +9,7 @@
     <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.8.4/dist/aframe-extras.min.js"></script>
     <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
     <script>
-      AFRAME.registerShader('hologram', {
+      AFRAME.registerShader('basicHologram', {
         schema: {
           timeMsec: {type: 'time', is: 'uniform'}
         },
@@ -26,19 +26,15 @@
           varying vec2 vUv;
           void main() {
             float time = timeMsec / 1000.0;
-            vec3 color = vec3(0.0);
-            color.r = 0.5 + 0.5 * sin(vUv.y * 10.0 + time * 2.0);
-            color.g = 0.5 + 0.5 * sin(vUv.y * 10.0 + time * 2.0 + 2.0);
-            color.b = 0.5 + 0.5 * sin(vUv.y * 10.0 + time * 2.0 + 4.0);
-            float grid = step(0.05, abs(sin(vUv.x * 10.0)) * abs(sin(vUv.y * 10.0)));
-            gl_FragColor = vec4(color * grid, 1.0);
+            vec3 color = vec3(0.5 + 0.5 * sin(time), 0.5, 1.0);
+            gl_FragColor = vec4(color, 1.0);
           }
         `
       });
-
+  
       AFRAME.registerComponent('apply-shader', {
         schema: {
-          shader: {type: 'string', default: 'hologram'}
+          shader: {type: 'string', default: 'basicHologram'}
         },
         init: function () {
           this.el.addEventListener('model-loaded', () => {
@@ -65,7 +61,7 @@
          gltf-model= "./src/drunk.gltf" 
          animation-mixer 
          loop="true" 
-         apply-shader="shader: hologram">
+         apply-shader="shader: basicHologram">
           </a-entity> 
 
          <a-plane 
