@@ -8,31 +8,7 @@
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
     <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.8.4/dist/aframe-extras.min.js"></script>
     <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
-    <script>
-      AFRAME.registerComponent("model-opacity", {
-        schema: {
-          opacity: { type: "number", default: 0.5 }
-        },
-        init: function() {
-          this.el.addEventListener("model-loaded", this.update.bind(this));
-        },
-        update: function() {
-          var mesh = this.el.getObject3D("mesh");
-          var data = this.data;
-          if (!mesh) {
-            return;
-          }
-          mesh.traverse(function(node) {
-            if (node.isMesh) {
-              console.log(node);
-              node.material.opacity = data.opacity;
-              node.material.transparent = data.opacity < 1.0;
-              node.material.needsUpdate = true;
-            }
-          });
-        }
-      });
-    </script>
+    
   </head>
   <body style="margin : 0px; overflow: hidden;">
  
@@ -45,7 +21,6 @@
          gltf-model= "./src/drunk.gltf" 
          animation-mixer 
          loop="true" 
-         model-opacity=0.5
          >
           </a-entity> 
 
@@ -53,7 +28,7 @@
          position="-0.02 0 0" 
          rotation="-90 0 0" 
          scale="1 1 1" 
-         material="color: blue;"
+         
          >
         </a-plane>
       </a-marker>
