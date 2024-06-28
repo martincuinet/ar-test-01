@@ -12,7 +12,7 @@
   </head>
   <body style="margin : 0px; overflow: hidden;">
  
-    <a-scene embedded arjs='sourceType: webcam; patternRatio: 0.75; trackingMethod: best; maxDetectionRate: 60; detectionMode: mono;' renderer='antialias: true; alpha: true; precision: medium;' vr-mode-ui="enabled: false" stats>
+    <a-scene embedded arjs='sourceType: webcam; sourceWidth:1280; sourceHeight:960; displayWidth: 1280; displayHeight: 960;' stats>
            
       <a-marker type ="pattern" url = "./src/pattern-logo.patt">       
          <a-entity position="0 0 0" scale="1 1 1" gltf-model= "./src/drunk.gltf" animation-mixer loop="true"></a-entity> 
