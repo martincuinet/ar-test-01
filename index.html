@@ -55,7 +55,10 @@
           }
           console.log("Model loaded");
           model.traverse(node => {
-            if (node.isMesh) {
+            if (node.type != "Mesh") {
+              return;
+            }else{
+
               node.material = new THREE.ShaderMaterial({
                 uniforms: {
                   color: { value: new THREE.Color(this.data.color) },
