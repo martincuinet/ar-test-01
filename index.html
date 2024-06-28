@@ -59,8 +59,21 @@
     <a-scene embedded arjs='sourceType: webcam; ' vr-mode-ui="enabled: false;">
            
       <a-marker type ="pattern" url = "./src/pattern-logo.patt">       
-         <a-entity position="0 0 0" scale="1 1 1" gltf-model= "./src/drunk.gltf" animation-mixer loop="true" material="shader: hologram;"></a-entity> 
-         <a-plane position="-0.02 0 0" rotation="-90 0 0" scale="1.2 1.2 1.2" material="transparent:false;"></a-plane>
+         <a-entity 
+         position="0 0 0" 
+         scale="1 1 1" 
+         gltf-model= "./src/drunk.gltf" 
+         animation-mixer 
+         loop="true" 
+         apply-shader="shader: hologram">
+          </a-entity> 
+
+         <a-plane 
+         position="-0.02 0 0" 
+         rotation="-90 0 0" 
+         scale="1.2 1.2 1.2" 
+         material="transparent:false;">
+        </a-plane>
       </a-marker>
       <a-entity camera ></a-entity>            
     </a-scene>
