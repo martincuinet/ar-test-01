@@ -8,7 +8,34 @@
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
     <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.8.4/dist/aframe-extras.min.js"></script>
     <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
-  
+    <script>
+      AFRAME.registerShader('hologram', {
+        schema: {
+          timeMsec: {type: 'time', is: 'uniform'}
+        },
+        vertexShader: `
+          varying vec2 vUv;
+          void main() {
+            vUv = uv;
+            vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+            gl_Position = projectionMatrix * mvPosition;
+          }
+        `,
+        fragmentShader: `
+          uniform float timeMsec;
+          varying vec2 vUv;
+          void main() {
+            float time = timeMsec / 1000.0;
+            vec3 color = vec3(0.0);
+            color.r = 0.5 + 0.5 * sin(vUv.y * 10.0 + time * 2.0);
+            color.g = 0.5 + 0.5 * sin(vUv.y * 10.0 + time * 2.0 + 2.0);
+            color.b = 0.5 + 0.5 * sin(vUv.y * 10.0 + time * 2.0 + 4.0);
+            float grid = step(0.05, abs(sin(vUv.x * 10.0)) * abs(sin(vUv.y * 10.0)));
+            gl_FragColor = vec4(color * grid, 1.0);
+          }
+        `
+      });
+    </script>
   </head>
   <body style="margin : 0px; overflow: hidden;">
  
@@ -16,7 +43,7 @@
            
       <a-marker type ="pattern" url = "./src/pattern-logo.patt">       
          <a-entity position="0 0 0" scale="1 1 1" gltf-model= "./src/drunk.gltf" animation-mixer loop="true"></a-entity> 
-         <a-plane position="0 -0.2 0" rotation="-90 0 0" scale="1.2 1.2 1.2" material="transparent:false;"></a-plane>
+         <a-plane position="0 -0.2 0" rotation="-90 0 0" scale="1.2 1.2 1.2" material="shader: hologram;" ></a-plane>
       </a-marker>
       <a-entity camera ></a-entity>            
     </a-scene>
