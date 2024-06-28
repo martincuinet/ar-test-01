@@ -9,40 +9,14 @@
     <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.8.4/dist/aframe-extras.min.js"></script>
     <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
     <script>
-      AFRAME.registerShader('basicHologram', {
-        schema: {
-          timeMsec: {type: 'time', is: 'uniform'}
-        },
-        vertexShader: `
-          varying vec2 vUv;
-          void main() {
-            vUv = uv;
-            vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-            gl_Position = projectionMatrix * mvPosition;
-          }
-        `,
-        fragmentShader: `
-          uniform float timeMsec;
-          varying vec2 vUv;
-          void main() {
-            float time = timeMsec / 1000.0;
-            vec3 color = vec3(0.5 + 0.5 * sin(time), 0.5, 1.0);
-            gl_FragColor = vec4(color, 1.0);
-          }
-        `
-      });
-  
-      AFRAME.registerComponent('apply-shader', {
-        schema: {
-          shader: {type: 'string', default: 'basicHologram'}
-        },
+      AFRAME.registerComponent('apply-basic-material', {
         init: function () {
           this.el.addEventListener('model-loaded', () => {
             const model = this.el.getObject3D('mesh');
             if (!model) return;
             model.traverse(node => {
               if (node.isMesh) {
-                node.material = new THREE.ShaderMaterial(AFRAME.shaders[this.data.shader].shader);
+                node.material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
               }
             });
           });
@@ -61,7 +35,7 @@
          gltf-model= "./src/drunk.gltf" 
          animation-mixer 
          loop="true" 
-         apply-shader="shader: basicHologram">
+         apply-basic-material>
           </a-entity> 
 
          <a-plane 
