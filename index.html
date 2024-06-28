@@ -48,7 +48,11 @@
         },
         applyShader: function () {
           const model = this.el.getObject3D('mesh');
-          if (!model) return;
+          if (!model) {
+            console.log("Model not found");
+            return;
+          }
+          console.log("Model loaded");
           model.traverse(node => {
             if (node.isMesh) {
               node.material = new THREE.ShaderMaterial({
