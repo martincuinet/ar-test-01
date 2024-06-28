@@ -9,78 +9,14 @@
     <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.8.4/dist/aframe-extras.min.js"></script>
     <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
     <script>
-      // Register the shader
-      AFRAME.registerShader('grid-glitch', {
-        schema: {
-          color: { type: 'color', is: 'uniform' },
-          timeMsec: { type: 'time', is: 'uniform' }
-        },
-        vertexShader: `
-          varying vec2 vUv;
-          void main() {
-            vUv = uv;
-            vec4 skinned = vec4(0.0);
-            #ifdef USE_SKINNING
-              skinned = bindMatrix * bindMatrixInverse * vec4(position, 1.0);
-            #else
-              skinned = vec4(position, 1.0);
-            #endif
-            gl_Position = projectionMatrix * modelViewMatrix * skinned;
-          }
-        `,
-        fragmentShader: `
-          varying vec2 vUv;
-          uniform vec3 color;
-          uniform float timeMsec;
-          void main() {
-            float time = timeMsec / 1000.0;
-            gl_FragColor = mix(
-              vec4(mod(vUv, 0.05) * 20.0, 1.0, 1.0),
-              vec4(color, 1.0),
-              sin(time)
-            );
-          }
-        `
-      });
-  
-      // Register the component to apply the shader
-      AFRAME.registerComponent('apply-grid-glitch-shader', {
-        schema: {
-          color: { type: 'color', default: '#00f' }
-        },
+      AFRAME.registerComponent('apply-basic-material', {
         init: function () {
-          this.updateShader();
-        },
-        update: function () {
-          this.updateShader();
-          this.material.skinning = true
-        },
-        tick: function (time) {
-          const model = this.el.getObject3D('mesh');
-          if (model) {
-            model.traverse(node => {
-              if (node.isMesh && node.material.uniforms && node.material.uniforms.timeMsec) {
-                node.material.uniforms.timeMsec.value = time;
-              }
-            });
-          }
-        },
-        updateShader: function () {
           this.el.addEventListener('model-loaded', () => {
             const model = this.el.getObject3D('mesh');
             if (!model) return;
             model.traverse(node => {
               if (node.isMesh) {
-                node.material = new THREE.ShaderMaterial({
-                  uniforms: {
-                    color: { value: new THREE.Color(this.data.color) },
-                    timeMsec: { value: 0 }
-                  },
-                  vertexShader: AFRAME.shaders['grid-glitch'].vertexShader,
-                  fragmentShader: AFRAME.shaders['grid-glitch'].fragmentShader,
-                  skinning: node.geometry.attributes.skinWeight ? true : false
-                });
-                node.material.needsUpdate = true;
+                node.material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
               }
             });
           });
@@ -99,7 +35,7 @@
          gltf-model= "./src/drunk.gltf" 
          animation-mixer 
          loop="true" 
-         apply-grid-glitch-shader = "color: blue;"
+         apply-basic-material
          >
           </a-entity> 
 
@@ -107,7 +43,7 @@
          position="-0.02 0 0" 
          rotation="-90 0 0" 
          scale="1.2 1.2 1.2" 
-         material="shader:grid-glitch; color: blue;"
+         apply-basic-material
          >
         </a-plane>
       </a-marker>
