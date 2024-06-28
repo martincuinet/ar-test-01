@@ -9,24 +9,22 @@
     <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.8.4/dist/aframe-extras.min.js"></script>
     <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
     <script>
+      // Register the shader
       AFRAME.registerShader('grid-glitch', {
         schema: {
           color: { type: 'color', is: 'uniform' },
           timeMsec: { type: 'time', is: 'uniform' }
         },
         vertexShader: `
-          uniform mat4 boneMatrices[MAX_BONES];
-          attribute vec4 skinIndex;
-          attribute vec4 skinWeight;
           varying vec2 vUv;
-  
           void main() {
             vUv = uv;
             vec4 skinned = vec4(0.0);
-            for (int i = 0; i < 4; i++) {
-              vec4 transformed = boneMatrices[int(skinIndex[i])] * vec4(position, 1.0);
-              skinned += skinWeight[i] * transformed;
-            }
+            #ifdef USE_SKINNING
+              skinned = bindMatrix * bindMatrixInverse * vec4(position, 1.0);
+            #else
+              skinned = vec4(position, 1.0);
+            #endif
             gl_Position = projectionMatrix * modelViewMatrix * skinned;
           }
         `,
@@ -45,6 +43,7 @@
         `
       });
   
+      // Register the component to apply the shader
       AFRAME.registerComponent('apply-grid-glitch-shader', {
         schema: {
           color: { type: 'color', default: '#00f' }
@@ -62,7 +61,7 @@
                   },
                   vertexShader: AFRAME.shaders['grid-glitch'].vertexShader,
                   fragmentShader: AFRAME.shaders['grid-glitch'].fragmentShader,
-                  skinning: true
+                  skinning: node.geometry.attributes.skinWeight ? true : false // Enable skinning if the model uses it
                 });
                 node.material.needsUpdate = true;
               }
@@ -73,7 +72,7 @@
           const model = this.el.getObject3D('mesh');
           if (model) {
             model.traverse(node => {
-              if (node.isMesh && node.material.uniforms && node.material.uniforms.timeMsec) {
+              if (node.isMesh && node.material.uniforms.timeMsec) {
                 node.material.uniforms.timeMsec.value = time;
               }
             });
@@ -101,7 +100,7 @@
          position="-0.02 0 0" 
          rotation="-90 0 0" 
          scale="1.2 1.2 1.2" 
-         material="shader:grid-glitch"
+         material="shader:grid-glitch; color: blue;"
          >
         </a-plane>
       </a-marker>
