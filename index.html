@@ -68,16 +68,7 @@
             }
           });
         },
-        tick: function (time) {
-          const model = this.el.getObject3D('mesh');
-          if (model) {
-            model.traverse(node => {
-              if (node.isMesh && node.material.uniforms.timeMsec) {
-                node.material.uniforms.timeMsec.value = time;
-              }
-            });
-          }
-        }
+       
       });
     </script>
   </head>
