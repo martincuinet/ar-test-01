@@ -55,7 +55,7 @@
           }
           console.log("Model loaded");
           model.traverse(node => {
-            if (node.type != "Mesh") {
+            if (node.type != "mesh") {
               return;
             }else{
 
@@ -68,6 +68,7 @@
                 fragmentShader: AFRAME.shaders['transparent-glitch'].fragmentShader,
                 transparent: true // Enable transparency
               });
+              node.material.dispose();
             }
           });
         },
