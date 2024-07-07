@@ -77,7 +77,7 @@
         console.log(dropdown.value)
         if (modelEntity && isModelLoaded) {
           const selectedAnimation = dropdown.value;
-          modelEntity.setAttribute('animation-mixer', `clip: ${selectedAnimation},loop: 'repeat',crossFadeDuration: 0.4,`);
+          modelEntity.setAttribute('animation-mixer', `clip: ${selectedAnimation};loop: 'repeat';crossFadeDuration: 0.4,`);
           
 
         
