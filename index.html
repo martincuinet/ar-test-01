@@ -1,62 +1,64 @@
+<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Myself At Home</title>
-    <meta name="description" content="" />
-     
-    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-    <!-- <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.8.4/dist/aframe-extras.min.js"></script> -->
-    <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
-    <script>
-      let isModelLoaded = false;
+<head>
+  <meta charset="utf-8" />
+  <title>Myself At Home</title>
+  <meta name="description" content="">
+  <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+  <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
+  <script>
+    let isModelLoaded = false;
 
-      // Function to extract animation names from the glTF model
+    // Function to extract animation names from the glTF model
     function getAnimationNames(model) {
       const animations = model.getObject3D('mesh').animations;
       return animations ? animations.map(anim => anim.name) : [];
     }
 
-      // Component that launches when the marker is detected
-      AFRAME.registerComponent('marker-detected', {
+    // Component that launches when the marker is detected
+    AFRAME.registerComponent('marker-detected', {
       init: function () {
         this.el.addEventListener('markerFound', () => {
-          const messageDiv = document.getElementById('message');
+          const message = document.getElementById('message');
+          // const button = document.getElementById('actionButton');
+          const dropdown = document.getElementById('animationDropdown');
           if (!isModelLoaded) {
-            messageDiv.innerHTML = 'Marker detected, loading model...';
+            message.innerHTML = 'Marker detected, loading model...';
           } else {
-            messageDiv.innerHTML = 'Tracking Marker...';
+            message.innerHTML = 'Tracking Marker...';
             setTimeout(() => {
-              messageDiv.style.display = 'none';
-            },3000); // Hide the message after 5 seconds
+              message.style.display = 'none';
+            }, 3000); // Hide the message after 3 seconds
           }
-          messageDiv.style.display = 'block';
+          message.style.display = 'block';
+          
         });
 
         this.el.addEventListener('markerLost', () => {
-          const messageDiv = document.getElementById('message');
-          messageDiv.innerHTML = 'Marker lost';
-          messageDiv.style.display = 'block';
+          const message = document.getElementById('message');
+          message.innerHTML = 'Marker lost';
+          message.style.display = 'block';
         });
       }
     });
-  
-      // Component that launches when the glTF model is loaded
-      AFRAME.registerComponent('model-loaded-listener', {
+
+    // Component that launches when the glTF model is loaded
+    AFRAME.registerComponent('model-loaded-listener', {
       init: function () {
         this.el.addEventListener('model-loaded', () => {
           isModelLoaded = true;
-          const messageDiv = document.getElementById('message');
-          const button = document.getElementById('actionButton');
+          const message = document.getElementById('message');
+          // const button = document.getElementById('actionButton');
           const dropdown = document.getElementById('animationDropdown');
           
-          messageDiv.innerHTML = 'Model loaded successfully!';
-          setTimeout(() => {
-            messageDiv.style.display = 'none';
-          }, 5000); // Hide the message after 5 seconds
+          message.innerHTML = 'Model loaded successfully!';
+          // button.style.display = 'block'; // Show the button
+          dropdown.style.display = 'block'; // Show the dropdown
+          // setTimeout(() => {
+          //   message.style.display = 'none';
+          // }, 5000); // Hide the message after 5 seconds
           
-          
-
           // Populate the dropdown menu with animation names
           const animationNames = getAnimationNames(this.el);
           animationNames.forEach(name => {
@@ -66,12 +68,11 @@
             dropdown.appendChild(option);
           });
 
-          button.style.display = 'block'; // Show the button
-          dropdown.style.display = 'block'; // Show the dropdown
+          
         });
       }
     });
-    </script>
+  </script>
   <style>
     #message {
       position: absolute;
@@ -85,24 +86,7 @@
       display: none;
       z-index: 10; /* Ensure the message is above the scene */
     }
-    #actionButton {
-      position: absolute;
-      bottom: 50px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #bf701c;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      display: none;
-      z-index: 20; /* Ensure the button is above other elements */
-    }
-    #actionButton:hover {
-    background-color: #e28521;
-  }
-  #animationDropdown {
+    #animationDropdown {
       position: absolute;
       bottom: 20px;
       left: 50%;
@@ -113,33 +97,27 @@
       z-index: 20; /* Ensure the dropdown is above other elements */
     }
   </style> 
-  </head>
-  <body style="margin : 0px; overflow: hidden;">
-    <div id="message">Waiting for marker...</div>
-    <button id="actionButton" onclick="alert('Button Clicked!')">Take Action</button>
-    <select id="animationDropdown"></select>
-    <a-scene embedded arjs='sourceType: webcam; ' vr-mode-ui="enabled: false;">
-           
-      <a-marker type ="pattern" url = "./src/pattern-logo.patt" marker-detected>       
-         <a-entity 
-         position="0 0 0" 
-         scale="1 1 1" 
-         gltf-model= "./src/myself.gltf" 
-         animation-mixer 
-         loop="true" 
-         model-loaded-listener
-         >
-          </a-entity> 
-
-         <a-plane 
-         position="-0.02 0 0" 
-         rotation="-90 0 0" 
-         scale="1 1 1" 
-         
-         >
-        </a-plane>
-      </a-marker>
-      <a-entity camera ></a-entity>            
-    </a-scene>
-  </body>
+</head>
+<body style="margin: 0px; overflow: hidden;">
+  <div id="message">Waiting for marker...</div>
+  <select id="animationDropdown" style="display:none;"></select>
+  <a-scene embedded arjs='sourceType: webcam;' vr-mode-ui="enabled: false;">
+    <a-marker type="pattern" url="./src/pattern-logo.patt" marker-detected>       
+      <a-entity 
+        position="0 0 0" 
+        scale="1 1 1" 
+        gltf-model="./src/myself.gltf" 
+        animation-mixer 
+        loop="true" 
+        model-loaded-listener>
+      </a-entity> 
+      <a-plane 
+        position="-0.02 0 0" 
+        rotation="-90 0 0" 
+        scale="1 1 1">
+      </a-plane>
+    </a-marker>
+    <a-entity camera></a-entity>            
+  </a-scene>
+</body>
 </html>
