@@ -9,6 +9,7 @@
   <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
   <script>
     let isModelLoaded = false;
+    let modelEntity;
 
     // Function to extract animation names from the glTF model
     function getAnimationNames(model) {
@@ -21,7 +22,6 @@
       init: function () {
         this.el.addEventListener('markerFound', () => {
           const message = document.getElementById('message');
-          // const button = document.getElementById('actionButton');
           const dropdown = document.getElementById('animationDropdown');
           if (!isModelLoaded) {
             message.innerHTML = 'Marker detected, loading model...';
@@ -32,7 +32,6 @@
             }, 3000); // Hide the message after 3 seconds
           }
           message.style.display = 'block';
-          
         });
 
         this.el.addEventListener('markerLost', () => {
@@ -48,16 +47,16 @@
       init: function () {
         this.el.addEventListener('model-loaded', () => {
           isModelLoaded = true;
+          modelEntity = this.el; // Store reference to the model entity
+
           const message = document.getElementById('message');
-          // const button = document.getElementById('actionButton');
           const dropdown = document.getElementById('animationDropdown');
           
           message.innerHTML = 'Model loaded successfully!';
-          // button.style.display = 'block'; // Show the button
           dropdown.style.display = 'block'; // Show the dropdown
-          // setTimeout(() => {
-          //   message.style.display = 'none';
-          // }, 5000); // Hide the message after 5 seconds
+          setTimeout(() => {
+            message.style.display = 'none';
+          }, 5000); // Hide the message after 5 seconds
           
           // Populate the dropdown menu with animation names
           const animationNames = getAnimationNames(this.el);
@@ -67,10 +66,19 @@
             option.innerHTML = name;
             dropdown.appendChild(option);
           });
-
-          
         });
       }
+    });
+
+    // Event listener for the dropdown menu to play selected animation
+    document.addEventListener('DOMContentLoaded', () => {
+      const dropdown = document.getElementById('animationDropdown');
+      dropdown.addEventListener('change', (event) => {
+        if (modelEntity && isModelLoaded) {
+          const selectedAnimation = event.target.value;
+          modelEntity.setAttribute('animation-mixer', `clip: ${selectedAnimation}`);
+        }
+      });
     });
   </script>
   <style>
