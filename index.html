@@ -77,7 +77,10 @@
         console.log(dropdown.value)
         if (modelEntity && isModelLoaded) {
           const selectedAnimation = dropdown.value;
-          modelEntity.setAttribute('animation-mixer', `clip: ${selectedAnimation}`);
+          modelEntity.setAttribute('animation-mixer', `clip: ${selectedAnimation},loop: 'repeat',crossFadeDuration: 0.4,`);
+          
+
+        
         }
       });
     });
@@ -116,7 +119,8 @@
         position="0 0 0" 
         scale="1 1 1" 
         gltf-model="./src/myself.gltf" 
-        animation-mixer 
+        animation-mixer
+        clip= "DRUNK" 
         loop="repeat" 
         model-loaded-listener>
       </a-entity> 
