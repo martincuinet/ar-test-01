@@ -55,8 +55,7 @@
             messageDiv.style.display = 'none';
           }, 5000); // Hide the message after 5 seconds
           
-          button.style.display = 'block'; // Show the button
-          dropdown.style.display = 'block'; // Show the dropdown
+          
 
           // Populate the dropdown menu with animation names
           const animationNames = getAnimationNames(this.el);
@@ -66,6 +65,9 @@
             option.innerHTML = name;
             dropdown.appendChild(option);
           });
+
+          button.style.display = 'block'; // Show the button
+          dropdown.style.display = 'block'; // Show the dropdown
         });
       }
     });
@@ -122,7 +124,7 @@
          <a-entity 
          position="0 0 0" 
          scale="1 1 1" 
-         gltf-model= "./src/drunk.gltf" 
+         gltf-model= "./src/myself.gltf" 
          animation-mixer 
          loop="true" 
          model-loaded-listener
