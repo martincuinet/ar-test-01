@@ -10,6 +10,13 @@
     <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
     <script>
       let isModelLoaded = false;
+
+      // Function to extract animation names from the glTF model
+    function getAnimationNames(model) {
+      const animations = model.getObject3D('mesh').animations;
+      return animations ? animations.map(anim => anim.name) : [];
+    }
+
       // Component that launches when the marker is detected
       AFRAME.registerComponent('marker-detected', {
       init: function () {
@@ -36,20 +43,32 @@
   
       // Component that launches when the glTF model is loaded
       AFRAME.registerComponent('model-loaded-listener', {
-        init: function () {
-          this.el.addEventListener('model-loaded', () => {
-            isModelLoaded = true;
-            const messageDiv = document.getElementById('message');
-            messageDiv.innerHTML = 'Model loaded successfully !';
-            setTimeout(() => {
-              messageDiv.style.display = 'none';
-            },5000); // Hide the message after 5 seconds
-            // Show the button
-            const button = document.getElementById('action-button');
-            button.style.display = 'block';
+      init: function () {
+        this.el.addEventListener('model-loaded', () => {
+          isModelLoaded = true;
+          const messageDiv = document.getElementById('message');
+          const button = document.getElementById('actionButton');
+          const dropdown = document.getElementById('animationDropdown');
+          
+          messageDiv.innerHTML = 'Model loaded successfully!';
+          setTimeout(() => {
+            messageDiv.style.display = 'none';
+          }, 5000); // Hide the message after 5 seconds
+          
+          button.style.display = 'block'; // Show the button
+          dropdown.style.display = 'block'; // Show the dropdown
+
+          // Populate the dropdown menu with animation names
+          const animationNames = getAnimationNames(this.el);
+          animationNames.forEach(name => {
+            const option = document.createElement('option');
+            option.value = name;
+            option.innerHTML = name;
+            dropdown.appendChild(option);
           });
-        }
-      });
+        });
+      }
+    });
     </script>
   <style>
     #message {
@@ -64,7 +83,7 @@
       display: none;
       z-index: 10; /* Ensure the message is above the scene */
     }
-    #action-button {
+    #actionButton {
       position: absolute;
       bottom: 50px;
       left: 50%;
@@ -81,11 +100,22 @@
     #actionButton:hover {
     background-color: #e28521;
   }
+  #animationDropdown {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px;
+      font-size: 16px;
+      display: none;
+      z-index: 20; /* Ensure the dropdown is above other elements */
+    }
   </style> 
   </head>
   <body style="margin : 0px; overflow: hidden;">
     <div id="message">Waiting for marker...</div>
-    <button id="action-button" onclick="alert('Button Clicked!')">Take Action</button>
+    <button id="actionButton" onclick="alert('Button Clicked!')">Take Action</button>
+    <select id="animationDropdown"></select>
     <a-scene embedded arjs='sourceType: webcam; ' vr-mode-ui="enabled: false;">
            
       <a-marker type ="pattern" url = "./src/pattern-logo.patt" marker-detected>       
