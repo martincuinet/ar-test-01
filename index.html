@@ -74,8 +74,9 @@
     document.addEventListener('DOMContentLoaded', () => {
       const dropdown = document.getElementById('animationDropdown');
       dropdown.addEventListener('change', (event) => {
+        console.log(dropdown.value)
         if (modelEntity && isModelLoaded) {
-          const selectedAnimation = event.target.value;
+          const selectedAnimation = dropdown.value;
           modelEntity.setAttribute('animation-mixer', `clip: ${selectedAnimation}`);
         }
       });
@@ -84,7 +85,7 @@
   <style>
     #message {
       position: absolute;
-      bottom: 200px;
+      bottom: 100px;
       left: 50%;
       transform: translateX(-50%);
       background: rgba(0, 0, 0, 0.7);
@@ -116,7 +117,7 @@
         scale="1 1 1" 
         gltf-model="./src/myself.gltf" 
         animation-mixer 
-        loop="true" 
+        loop="repeat" 
         model-loaded-listener>
       </a-entity> 
       <a-plane 
