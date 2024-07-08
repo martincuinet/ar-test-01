@@ -111,13 +111,33 @@
       font-size: 16px;
       display: none;
       z-index: 20; /* Ensure the dropdown is above other elements */
+      appearance: none;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background-color: #fff;
+      padding: 10px 15px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+      cursor: pointer;
+    }
+    #animationDropdown:focus {
+      border-color: #bf701c;
+      box-shadow: 0 0 0 3px rgba(191, 112, 28, 0.2);
+      outline: none;
+    }
+    #animationDropdown::after {
+      content: '▼';
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
     }
   </style> 
 </head>
 <body style="margin: 0px; overflow: hidden;">
   <div id="message">Waiting for marker...</div>
   <select id="animationDropdown" style="display:none;"></select>
-  <a-scene embedded arjs='sourceType: webcam;' vr-mode-ui="enabled: false;" gesture-detector id="scene">
+  <a-scene embedded arjs='sourceType: webcam; trackingMethod: best;' vr-mode-ui="enabled: false;" antialias='true' gesture-detector id="scene">
     <a-marker type="pattern" url="./src/pattern-logo.patt" marker-detected smooth="true" smoothCount="10" smoothTolerance=".01" smoothThreshold="5" raycaster="objects: .clickable" emitevents="true" cursor="fuse: false; rayOrigin: mouse;">       
       <a-entity 
         position="0 0 0" 
